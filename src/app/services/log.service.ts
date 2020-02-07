@@ -4,16 +4,16 @@ import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 
 
-import { Log } from '../models/Log';
+import * as Log from '../models/Log';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
 
-logs: Log[]
+logs: Log.Log[]
 
-private logSource = new BehaviorSubject<Log>({id: null, text: null, date: null})
+private logSource = new BehaviorSubject<Log.Log>({id: null, text: null, date: null})
 selectedLog = this.logSource.asObservable();
 
   constructor() { 
@@ -24,14 +24,33 @@ selectedLog = this.logSource.asObservable();
     ]
   }
 
-  getLogs(): Observable<Log[]>{
+  getLogs(): Observable<Log.Log[]>{
     return of(this.logs)
   }
 
-  setFormLog(log: Log){
+  setFormLog(log: Log.Log){
     this.logSource.next(log);
   }
 
+  addLog(log: Log.Log) {
+    this.logs.unshift(log)
+  }
 
+  updateLog(log: Log.Log) {
+    this.logs.forEach((cur, index) => {
+      if(log.id === cur.id) {
+        this.logs.splice(index, 1)
+      }
+    })
+    this.logs.unshift(log)
+  }
+
+  deleteLog(log: Log.Log) {
+    this.logs.forEach((cur, index) => {
+      if(log.id === cur.id) {
+        this.logs.splice(index, 1)
+      }
+    })
+  }
 
 }
